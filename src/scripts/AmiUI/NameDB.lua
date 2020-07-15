@@ -1,6 +1,7 @@
 local GM = require("Ami-UI.MDK.gradientmaker")
 
 local initialise = function()
+    AUITriggers.NameDB = AUITriggers.NameDB or {}
     db:create("AmiUI.NameDB", {
         namedb={
             name="",
@@ -26,11 +27,10 @@ local initialise = function()
         colours = {
             gaudiguch = "#ad1d2d",
             celest = "#2997b7",
-            serenwilde = "#819c8b",
+            serenwilde = "#00FF00",
             glomdoring = "#8C198C",
             magnagora = "#800000",
-            hallifax = "#bbffff",
-            Multiverse = "rainbow"
+            hallifax = "#bbffff"
         },
         triggers = {},
 
@@ -48,8 +48,8 @@ local initialise = function()
                 return
             end
 
-            if self.triggers[name] then
-                killTrigger(self.triggers[name])
+            if AUITriggers.NameDB[name] then
+                killTrigger(AUITriggers.NameDB[name])
             end
 
             local trigger = function ()
@@ -76,11 +76,11 @@ local initialise = function()
                 end
             end
 
-            self.triggers[name] = tempTrigger(name, trigger)
+            AUITriggers.NameDB[name] = tempTrigger(name, trigger)
         end
     }
 
-    for _, c in db:fetch(AmiUI.NameDB.db.namedb) do
+    for _, c in ipairs(db:fetch(AmiUI.NameDB.db.namedb)) do
         AmiUI.NameDB:add(c.name)
     end
 
@@ -98,7 +98,7 @@ local initialise = function()
         character = yajl.to_value(character)
 
         if not AmiUI.NameDB:get(character.name) or AmiUI.NameDB:get(character.name).faction ~= character.faction then
-            cecho(character.name .. " is from <" .. AmiUI.NameDB.colours[character.faction] .. ">" .. character.faction .. "<reset>.\n")
+            hecho(AmiUI.NameDB.colours[character.faction] .. character.name .. " is from " .. character.faction .. ".\n")
         end
 
         db:add(AmiUI.NameDB.db.namedb, character)
@@ -106,6 +106,12 @@ local initialise = function()
     end
 
     registerAnonymousEventHandler("sysDownloadDone", downloaded_character)
+    
+    local add_player = function ()
+      AmiUI.NameDB:add(gmcp.Room.AddPlayer.name)
+    end
+    
+    registerAnonymousEventHandler("gmcp.Room.AddPlayer", add_player)
 end
 
 registerAnonymousEventHandler("AmiUI.Loaded", initialise)

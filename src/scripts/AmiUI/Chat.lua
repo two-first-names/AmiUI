@@ -3,7 +3,7 @@ local EMCO = require("Ami-UI.MDK.EMCO")
 local initialise = function()
     local fontSize = 9
     local fontWidth, fontHeight = calcFontSize(fontSize)
-    local width = 80
+    local width = 120
 
     AmiUI.Chat = EMCO:new({
         name = "AmiUI.Chat",
@@ -17,6 +17,7 @@ local initialise = function()
         consoles = {
           "All", 
           "Local",
+          "Tells",
           "City",
           "Guild",
           "Order",
@@ -28,12 +29,36 @@ local initialise = function()
         mapTab = true,
         fontSize = fontSize
     })
+    
+    AmiUI.Chat.channels = {
+      ct = "City",
+      emotes = "Local",
+      gt = "Guild",
+      says = "Local",
+      market = "Misc",
+      newbie = "Misc",
+      oto = "Order",
+      otc = "Order",
+    }
 
     local capture_chat = function ()
-        display(gmcp.Comm.Channel.Text)
+        local text = ansi2decho(gmcp.Comm.Channel.Text.text)
+        local channel = AmiUI.Chat.channels[gmcp.Comm.Channel.Text.channel]
+        if gmcp.Comm.Channel.Text.channel:match("clt") then channel = "Clans" end
+        if gmcp.Comm.Channel.Text.channel:match("tell") then channel = "Tells" end
+        if not channel then
+          channel = "Misc"
+          text = "(" .. gmcp.Comm.Channel.Text.channel .. ") " .. text
+        end
+        AmiUI.Chat:decho(channel, text .. "\n")
+        if channel ~= "Local" then tempTrigger(text:gsub("<r><%w+,%w+,%w+:>", ""), function () deleteLine() end, true) end
     end
-
-    registerAnonymousEventHandler("gmcp.Comm.Channel.Text", capture_chat)
+    
+    if AUITriggers.chat then
+      killAnonymousEventHandler(AUITriggers.chat)
+    end
+    
+    AUITriggers.chat = registerAnonymousEventHandler("gmcp.Comm.Channel.Text", capture_chat)
 end
 
 registerAnonymousEventHandler("AmiUI.Loaded", initialise)
