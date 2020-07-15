@@ -104,14 +104,26 @@ local initialise = function()
         db:add(AmiUI.NameDB.db.namedb, character)
         AmiUI.NameDB:add(character.name)
     end
+    
+    if AUITriggers.NameDBDownload then
+        killAnonymousEventHandler(AUITriggers.NameDBDownload)
+    end
 
-    registerAnonymousEventHandler("sysDownloadDone", downloaded_character)
+    AUITriggers.NameDBDownload = registerAnonymousEventHandler("sysDownloadDone", downloaded_character)
     
     local add_player = function ()
       AmiUI.NameDB:add(gmcp.Room.AddPlayer.name)
     end
+  
+    if AUITriggers.NameDBPlayer then
+        killAnonymousEventHandler(AUITriggers.NameDBPlayer)
+    end
     
-    registerAnonymousEventHandler("gmcp.Room.AddPlayer", add_player)
+    AUITriggers.NameDBPlayer = registerAnonymousEventHandler("gmcp.Room.AddPlayer", add_player)
 end
 
-registerAnonymousEventHandler("AmiUI.Loaded", initialise)
+if AUITriggers.NameDB then
+    killAnonymousEventHandler(AUITriggers.NameDB)
+end
+
+AUITriggers.NameDB = registerAnonymousEventHandler("AmiUI.Loaded", initialise)

@@ -13,4 +13,8 @@ local initialise = function()
     }
 end
 
-registerAnonymousEventHandler("AmiUI.Loaded", initialise)
+if AUITriggers.Gauges then
+    killAnonymousEventHandler(AUITriggers.Gauges)
+end
+
+AUITriggers.Gauges = registerAnonymousEventHandler("AmiUI.Loaded", initialise)
