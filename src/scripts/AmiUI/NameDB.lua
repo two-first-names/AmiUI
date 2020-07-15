@@ -122,6 +122,8 @@ local initialise = function()
     AUITriggers.NameDBPlayer = registerAnonymousEventHandler("gmcp.Room.AddPlayer", add_player)
 end
 
+AUITriggers = AUITriggers or {}
+
 if AUITriggers.NameDB then
     killAnonymousEventHandler(AUITriggers.NameDB)
 end

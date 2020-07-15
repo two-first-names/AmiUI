@@ -61,6 +61,8 @@ local initialise = function()
     AUITriggers.chat = registerAnonymousEventHandler("gmcp.Comm.Channel.Text", capture_chat)
 end
 
+AUITriggers = AUITriggers or {}
+
 if AUITriggers.Chat then
     killAnonymousEventHandler(AUITriggers.Chat)
 end

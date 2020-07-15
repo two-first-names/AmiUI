@@ -13,6 +13,8 @@ local initialise = function()
     }
 end
 
+AUITriggers = AUITriggers or {}
+
 if AUITriggers.Gauges then
     killAnonymousEventHandler(AUITriggers.Gauges)
 end

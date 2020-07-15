@@ -4,5 +4,7 @@ AmiUI = {
     end
 }
 
+AUITriggers = AUITriggers or {}
+
 AmiUI:log("Initializing AmiUI...")
 tempTimer( 0, function () raiseEvent( "AmiUI.Loaded" ) end )
